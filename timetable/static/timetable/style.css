@@ -1,0 +1,265 @@
+:root {
+  --navy: #0f2942;
+  --gold: #c9a227;
+  --bg: #f4f6f9;
+  --card: #ffffff;
+  --border: #e1e5eb;
+  --text: #1c2733;
+  --muted: #6b7684;
+  --clash: #d9534f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  background: var(--navy);
+  color: white;
+  padding: 28px 24px;
+  text-align: center;
+}
+
+header h1 { margin: 0 0 4px; font-size: 1.6rem; }
+.subtitle { margin: 0; color: #cdd6e0; font-size: 0.95rem; }
+
+main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 800px) {
+  main { grid-template-columns: 1fr 1fr; }
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  max-width: 900px;
+  margin: 0 auto 16px;
+}
+
+main .panel { margin: 0; }
+
+.panel h2 { margin-top: 0; font-size: 1.05rem; }
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.results-list {
+  margin-top: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.result-item, .selected-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.result-item:last-child, .selected-item:last-child { border-bottom: none; }
+
+.result-item .name, .selected-item .name { flex: 1; padding-right: 10px; }
+.result-item .code, .selected-item .code { font-weight: 600; color: var(--navy); }
+
+button.add-btn, button.remove-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+button.add-btn { background: var(--navy); color: white; }
+button.add-btn:disabled { background: #9aa6b3; cursor: not-allowed; }
+button.remove-btn { background: #f1dede; color: var(--clash); }
+
+.empty-hint { color: var(--muted); font-size: 0.9rem; }
+
+#generateBtn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 12px;
+  background: var(--gold);
+  color: var(--navy);
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+#generateBtn:disabled { background: #e6ddc0; color: #9a8f6a; cursor: not-allowed; }
+
+.status-msg { font-size: 0.85rem; color: var(--muted); min-height: 1.2em; }
+
+/* Timetable panel is intentionally wider than the other panels so the full
+   day grid has room to breathe. */
+.timetable-panel {
+  max-width: none;
+  width: 96%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #e2e5e9 25%,
+    #f0f2f5 50%,
+    #e2e5e9 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.clash-warning {
+  background: #fdecea;
+  border: 1px solid var(--clash);
+  color: var(--clash);
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 0.9rem;
+}
+
+.timetable-scroll { overflow-x: auto; }
+
+/* --- Timetable grid (CSS Grid, not a <table>) ---------------------------
+   Grid items stretch to fill their row's full height by default, which is
+   what makes each module card fill its cell completely with no extra CSS
+   hacks needed. */
+.tt-grid {
+  display: grid;
+  min-width: 1100px;
+  border: 1px solid var(--border);
+  border-left: none;
+  border-top: none;
+}
+
+.tt-cell {
+  border-left: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  font-size: 0.82rem;
+  min-height: 0;
+  min-width: 0;
+}
+
+.tt-head {
+  background: var(--navy);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  font-weight: 600;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.tt-daycol {
+  background: var(--navy);
+  color: white;
+  white-space: nowrap;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+}
+
+.event-block {
+  background: #eaf2ff;
+  border-left: 4px solid var(--navy);
+  padding: 6px 8px;
+  flex: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cell-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-block.clashing {
+  background: #fdecea;
+  border-left-color: var(--clash);
+}
+
+.event-block .ev-module { font-weight: 700; }
+.event-block .ev-time { color: var(--muted); font-size: 0.78rem; font-weight: 600; }
+.event-block .ev-meta { color: var(--muted); font-size: 0.78rem; }
+
+/* ---------------------------------------------------------------------
+   Mobile: below 700px, the 10-column grid is unreadable no matter how it's
+   styled, so it's swapped for a stacked day-by-day list instead. Same DOM
+   from app.js is reused - this just changes how it's laid out. */
+@media (max-width: 700px) {
+  .timetable-panel { width: 100%; }
+
+  .tt-grid {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: none;
+  }
+
+  /* Hide the top header row (Day / time-slot labels) - times are shown
+     inside each card instead. */
+  .tt-head { display: none; }
+
+  .tt-cell {
+    border: none;
+    border-radius: 8px;
+  }
+
+  /* Empty cells (no class visible in the stacked view) are hidden entirely
+     so you only see the slots that actually have something in them. */
+  .tt-empty { display: none; }
+
+  .tt-daycol {
+    border-radius: 8px;
+    margin: 14px 0 6px;
+    padding: 8px 12px;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .tt-daycol:first-of-type { margin-top: 0; }
+
+  .cell-inner { height: auto; }
+
+  .event-block {
+    margin-bottom: 8px;
+    border-radius: 8px;
+  }
+}

@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UniZulu Personal Timetable Builder</title>
+<link rel="stylesheet" href="{% static 'timetable/style.css' %}" />
+</head>
+<body>
+  <header>
+    <h1>My Timetable Builder</h1>
+    <p class="subtitle">University of Zululand — search your modules, build your own weekly timetable</p>
+  </header>
+
+  <main>
+    <section class="panel search-panel">
+      <h2>1. Find your modules</h2>
+      <input id="searchInput" type="text" placeholder="Search by module code or name, e.g. ACC102 or Marketing" autocomplete="off" />
+      <div id="searchResults" class="results-list"></div>
+    </section>
+
+    <section class="panel selected-panel">
+      <h2>2. Your modules</h2>
+      <div id="selectedList" class="selected-list">
+        <p class="empty-hint">No modules selected yet.</p>
+      </div>
+      <button id="generateBtn" disabled>Generate My Timetable</button>
+      <p id="statusMsg" class="status-msg"></p>
+    </section>
+  </main>
+
+  <section class="panel timetable-panel" id="timetablePanel" hidden>
+    <h2>3. Your Personal Timetable</h2>
+    <div id="clashWarning" class="clash-warning" hidden></div>
+    <div class="timetable-scroll">
+      <div id="timetableGrid" class="tt-grid"></div>
+    </div>
+  </section>
+
+  <script src="{% static 'timetable/app.js' %}"></script>
+</body>
+</html>
